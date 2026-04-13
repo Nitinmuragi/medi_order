@@ -25,6 +25,7 @@ from Med_app.Med_models import (
     Med_Payment, Med_Notification
 )
 from sqlalchemy import func
+from sqlalchemy.exc import SQLAlchemyError
 from Med_app.utils.Med_security import Med_hash_password, Med_check_password
 
 # Email and Med_Payment imports
@@ -71,7 +72,11 @@ def is_payment_enabled():
 # user loader
 @login_manager.user_loader
 def Med_load_user(user_id):
-    return Med_User.query.get(int(user_id))
+    try:
+        return Med_User.query.get(int(user_id))
+    except Exception as exc:
+        app.logger.error(f"user_loader failed for id={user_id}: {exc}")
+        return None
 
 # =========================
 # Email Helper Functions
@@ -625,7 +630,12 @@ def Med_login():
         phone = request.form.get("phone")
         password = request.form.get("password")
 
-        user = Med_User.query.filter_by(phone=phone).first()
+        try:
+            user = Med_User.query.filter_by(phone=phone).first()
+        except SQLAlchemyError as exc:
+            app.logger.error(f"Login query failed: {exc}")
+            flash("Database connection issue. Please try again in a moment.", "danger")
+            return redirect(url_for('Med_auth.Med_login'))
 
         if user and Med_check_password(password, user.password_hash):
             login_user(user)
