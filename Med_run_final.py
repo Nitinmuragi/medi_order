@@ -1863,6 +1863,14 @@ app.register_blueprint(Med_order_bp)
 app.register_blueprint(Med_payment_bp)
 app.register_blueprint(Med_admin_bp)
 
+# Ensure required tables exist on fresh deployments.
+with app.app_context():
+    try:
+        db.create_all()
+        app.logger.info("Database tables verified/created successfully")
+    except Exception as exc:
+        app.logger.error(f"Database initialization failed: {exc}")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
