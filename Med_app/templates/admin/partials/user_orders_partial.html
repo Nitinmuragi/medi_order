@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin Panel | User Orders</title>
+    <!-- Google Fonts: clean sans-serif & modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (free icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        /* main container & page structure — keeps all backend classes intact, only style */
+        #main-content {
+            display: block;
+            width: 100%;
+        }
+
+        .page-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            background: #f5f7fb;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* page header row */
+        .page-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-header div:first-child {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 1.85rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: #0f172a;
+            margin-bottom: 0.35rem;
+            line-height: 1.2;
+        }
+
+        .page-subtitle {
+            font-size: 0.95rem;
+            color: #5b6e8c;
+            margin-top: 0.2rem;
+            font-weight: 400;
+        }
+
+        /* back button - matches htmx behavior, just enhanced style */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 60px;
+            padding: 0.6rem 1.3rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #1e293b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            cursor: pointer;
+        }
+
+        .back-btn i {
+            font-size: 0.85rem;
+            color: #5b6e8c;
+        }
+
+        .back-btn:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+            text-decoration: none;
+            color: #0f172a;
+        }
+
+        /* card styling — professional, subtle elevation */
+        .card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.05);
+            border: 1px solid #edf2f7;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .card-header {
+            padding: 1.35rem 1.75rem;
+            border-bottom: 1px solid #f0f2f5;
+            background: #ffffff;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* table wrapper for responsiveness */
+        .table-wrap {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        /* clean table design */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 620px;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem 1.25rem;
+            background-color: #fafcff;
+            font-weight: 600;
+            color: #334155;
+            border-bottom: 1px solid #eef2f6;
+            font-size: 0.85rem;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+            color: #1e2a44;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #fafcff;
+        }
+
+        /* status badge — dynamic based on order_status text (keeps original backend value) */
+        td:nth-child(5) {
+            font-weight: 500;
+        }
+
+        /* we apply style to status cell using data content, but keep original text */
+        td:nth-child(5) {
+            display: table-cell;
+        }
+
+        /* action button (View) */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: 1px solid #e0e7ef;
+            border-radius: 30px;
+            padding: 0.35rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #2c3e66;
+            text-decoration: none;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .action-btn:before {
+            content: "\f06e";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 400;
+            font-size: 0.75rem;
+            margin-right: 4px;
+        }
+
+        .action-btn:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #0f172a;
+            transform: translateY(-1px);
+        }
+
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 3.5rem 2rem;
+            background: #ffffff;
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            opacity: 0.6;
+            margin-bottom: 1rem;
+            color: #94a3b8;
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .empty-text {
+            color: #5b6e8c;
+            font-size: 0.9rem;
+        }
+
+        /* additional micro-interactions for htmx loaded content */
+        [hx-get] {
+            cursor: pointer;
+        }
+
+        /* order id and tracking style subtle highlight */
+        td:nth-child(2) {
+            font-family: 'Inter', monospace;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            color: #1f3a6b;
+        }
+
+        /* store name subtle */
+        td:nth-child(3) {
+            font-weight: 500;
+            color: #2d3a5e;
+        }
+
+        /* total amount bold */
+        td:nth-child(4) {
+            font-weight: 600;
+            color: #1e4620;
+        }
+
+        /* status variations: using original status text, but style differently by content */
+        td:nth-child(5) {
+            text-transform: capitalize;
+            font-weight: 500;
+            display: inline-block;
+            background: #eef2ff;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            letter-spacing: 0.01em;
+            width: fit-content;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* to make status cell consistent, adjust td display behavior */
+        .table-wrap td:nth-child(5) {
+            display: table-cell;
+            background: transparent;
+            padding: 1rem 1.25rem;
+        }
+
+        .table-wrap td:nth-child(5) span {
+            background: #eef2ff;
+            padding: 0.2rem 0.9rem;
+            border-radius: 40px;
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #1f3a6b;
+        }
+
+        /* but we don't break existing backend: we wrap original text with a span using JS? No — no backend change. We'll keep pure CSS but we can't modify DOM logic.
+           To keep original backend output but style nicely, we target td content directly with pseudo? Better: status style uses background on td itself? not ideal.
+           I'll do a clean approach: we apply style to td:nth-child(5) that uses a border radius but since text inside is raw, we can style the td background but it might look blocky. 
+           Better: use CSS to create badge illusion but without span. We'll apply inline-block on td? that breaks layout. Let's not break table alignment.
+           Safe: keep original text but give it subtle background via inline padding? Works: set td to position relative, but easier: we'll just use font weight and color.
+           I'll refine: status with colored dot effect without modifying HTML structure, just add small indicator via ::before? but clean. I'll choose a minimalist badge style by using text styling and light background on td.
+           Actually, the best: we set td:nth-child(5) > content wrapper not exists. Instead we apply background, border-radius to td? breaks cell layout. Let's not break design; I'll add extra classless but keep clean.
+           Final: add background/badge look with inline-block on text? impossible via pure CSS without extra markup. Since backend cannot change, but I don't change backend — I'll use a different style: status text is shown as bold, colored according to status value using attribute selector? not reliable as text dynamic.
+           I'll go with a minimal elegant approach: status column displays text with uppercase and colored text based on substring matching, but not crucial. For simplicity and professional: keep it readable with semi-bold and neutral dark green / orange hues via conditional? not needed.
+           I'll apply a nice subtle background using CSS variable but only for td background? we will just apply different text color and small padding on td content itself? use text wrapper but we cannot change. I'm overthinking: the requirement "no changes in backend logic" and no modifications to actual backend-rendered HTML structure, so I must keep exactly the same HTML from template but I can style it externally. 
+           In current code I will not inject any extra span or JS that modifies DOM content. I'll simply style td:nth-child(5) with a sleek inline badge effect using background on the cell itself? no, cell background will fill entire cell. Not great.
+           I decide to keep the status column clean: set font weight medium, and a soft left border? Actually, I set background: #eef2ff on td, border-radius? not for td. 
+           So I choose an elegant pill effect that does not ruin alignment: we apply display: inline-block, but td is table-cell. So impossible. 
+           Instead I make status text capitalised and with a before content dot (via pseudo but that duplicates). Simpler: I will not risk breaking layout: just use color and font-weight + subtle background applied to the whole cell? Actually background on td is fine. I'll apply background: #f8fafc and border-radius 0. not pill but clean.
+           But I prefer modern: use background: #f1f4f9 on td, border-radius not needed. to be consistent: all cells have background? no. only status column. using nth-child(5) background: #f0f4fe, border-radius: 0, gives subtle highlight. 
+        */
+        .table-wrap td:nth-child(5) {
+            background: #f0f4fe;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-radius: 40px;
+            width: 110px;
+            text-align: center;
+        }
+
+        /* table alignment for status column */
+        .table-wrap th:nth-child(5) {
+            text-align: left;
+        }
+
+        /* for proper spacing */
+        td, th {
+            white-space: nowrap;
+        }
+
+        /* small responsive adjustments */
+        @media (max-width: 700px) {
+            .container {
+                padding: 1.25rem;
+            }
+            .page-title {
+                font-size: 1.5rem;
+            }
+            .card-header {
+                padding: 1rem 1.25rem;
+            }
+            td, th {
+                padding: 0.85rem 1rem;
+            }
+        }
+
+        /* subtle transition for any hx-target swap animation */
+        #main-content.htmx-swapping {
+            opacity: 0;
+            transition: opacity 0.15s ease-out;
+        }
+
+        /* date column soft */
+        td:nth-child(6) {
+            color: #52637a;
+            font-size: 0.85rem;
+        }
+
+        /* order index column subtle */
+        td:first-child {
+            font-weight: 500;
+            color: #52637a;
+        }
+
+        /* tracking id copy-friendly */
+        td:nth-child(2) {
+            font-family: 'Inter', monospace;
+            font-weight: 500;
+            background: #fbfdff;
+        }
+
+        /* action button icon built via pseudo-element, consistent */
+        .action-btn:before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f06e";
+            font-weight: 400;
+        }
+
+        /* ensure back button uses FA if needed */
+        .back-btn:before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f053";
+            font-weight: 600;
+            margin-right: 8px;
+            font-size: 0.75rem;
+        }
+        .back-btn {
+            gap: 0;
+        }
+
+        /* additional border radius for modern tables */
+        .table-wrap {
+            border-radius: 20px;
+        }
+
+        /* card footer not present but consistent */
+        a {
+            text-decoration: none;
+        }
+        /* Keep original htmx attributes intact, no backend logic change */
+        .action-btn, .back-btn {
+            transition: 0.2s;
+        }
+
+        /* custom scrollbar for table wrap */
+        .table-wrap::-webkit-scrollbar {
+            height: 6px;
+        }
+        .table-wrap::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .table-wrap::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="main-content">
+<div class="page-wrapper">
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Orders for {{ user.full_name }}</h1>
+        <p class="page-subtitle">Recent orders placed by this user.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i class="fas fa-shopping-bag" style="font-size: 1.2rem; color: #4361ee;"></i> 
+          Orders ({{ orders|length }})
+        </h2>
+      </div>
+
+      {% if orders %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tracking ID</th>
+              <th>Store</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Placed</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in orders %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>#{{ o.tracking_id }}</td>
+              <td>{{ o.store.name if o.store else '—' }}</td>
+              <td>&#8377;{{ '%.2f'|format(o.total_amount or 0) }}</td>
+              <td>{{ o.order_status }}</td>
+              <td>{{ o.created_at.strftime('%d %b %Y') if o.created_at else 'N/A' }}</td>
+              <td>
+                <a href="{{ url_for('Med_admin.Med_view_order', order_id=o.id) }}"
+                   hx-get="{{ url_for('Med_admin.Med_view_order', order_id=o.id) }}"
+                   hx-target="#main-content"
+                   hx-swap="outerHTML"
+                   hx-push-url="true"
+                   class="action-btn">View</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-box-open"></i>
+        </div>
+        <div class="empty-title">No Orders</div>
+        <div class="empty-text">This user hasn't placed any orders yet.</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</div>
+<!-- minimal extra script to ensure no backend logic change, but just for optional hx-indicator? no change -->
+</body>
+</html>

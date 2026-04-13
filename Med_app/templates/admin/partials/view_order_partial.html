@@ -1,0 +1,398 @@
+<div id="main-content">
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: #f4f7fb;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1f2937;
+    }
+
+    .page-wrapper {
+        min-height: 100vh;
+        padding: 30px 20px;
+    }
+
+    .container-box {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .page-title {
+        font-size: 34px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+        font-size: 15px;
+        color: #6b7280;
+    }
+
+    .back-btn {
+        display: inline-block;
+        text-decoration: none;
+        background: #1e293b;
+        color: #ffffff;
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: #0f172a;
+    }
+
+    .main-card {
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .main-card-header {
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #ffffff;
+    }
+
+    .main-card-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 6px;
+    }
+
+    .main-card-text {
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 24px;
+    }
+
+    .info-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 22px;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+    }
+
+    .info-card:hover {
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        transition: 0.3s ease;
+    }
+
+    .info-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .detail-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .detail-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .detail-value {
+        font-size: 15px;
+        color: #111827;
+        line-height: 1.5;
+        word-break: break-word;
+    }
+
+    .amount {
+        font-size: 20px;
+        font-weight: 700;
+        color: #16a34a;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .status-new {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-accepted {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .status-delivered {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-other {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .payment-badge {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+    .file-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #2563eb;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+    .file-link:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+
+    .file-type {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 4px 10px;
+        background: #f1f5f9;
+        color: #111827;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .no-data {
+        color: #6b7280;
+        font-size: 15px;
+    }
+
+    @media (max-width: 900px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 28px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .details-grid {
+            padding: 18px;
+            gap: 16px;
+        }
+
+        .main-card-header {
+            padding: 20px 18px;
+        }
+
+        .info-card {
+            padding: 18px;
+        }
+    }
+</style>
+
+<div class="page-wrapper">
+    <div class="container-box">
+
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Order Details</h1>
+                <p class="page-subtitle">View complete information for order #{{ order.tracking_id }}</p>
+            </div>
+
+            <!-- <a href="{{ url_for('Med_admin.Med_admin_dashboard') }}"
+               hx-get="{{ url_for('Med_admin.Med_admin_dashboard') }}"
+               hx-target="#main-content"
+               hx-swap="outerHTML"
+               hx-push-url="true"
+               class="back-btn">
+                Back to Dashboard
+            </a> -->
+        </div>
+
+        <div class="main-card">
+            <div class="main-card-header">
+                <h2 class="main-card-title">Order Overview</h2>
+                <p class="main-card-text">Customer, store, payment, and prescription information in one place.</p>
+            </div>
+
+            <div class="details-grid">
+
+                <div class="info-card">
+                    <h3 class="info-title">Order Information</h3>
+                    <div class="detail-list">
+                        <div class="detail-item">
+                            <span class="detail-label">Order ID</span>
+                            <span class="detail-value">{{ order.tracking_id }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value">
+                                {% if order.order_status == 'NEW' %}
+                                    <span class="status-badge status-new">{{ order.order_status }}</span>
+                                {% elif order.order_status == 'ACCEPTED' %}
+                                    <span class="status-badge status-accepted">{{ order.order_status }}</span>
+                                {% elif order.order_status == 'DELIVERED' %}
+                                    <span class="status-badge status-delivered">{{ order.order_status }}</span>
+                                {% else %}
+                                    <span class="status-badge status-other">{{ order.order_status }}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Payment Method</span>
+                            <span class="detail-value">{{ order.payment_method }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Payment Status</span>
+                            <span class="detail-value">
+                                <span class="payment-badge">{{ order.payment_status }}</span>
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Total Amount</span>
+                            <span class="detail-value amount">₹{{ "%.2f"|format(order.total_amount) }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Created</span>
+                            <span class="detail-value">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="info-title">Customer Information</h3>
+                    <div class="detail-list">
+                        <div class="detail-item">
+                            <span class="detail-label">Name</span>
+                            <span class="detail-value">{{ order.user.full_name }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value">{{ order.user.phone }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value">{{ order.user.email or 'N/A' }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Delivery Address</span>
+                            <span class="detail-value">{{ order.delivery_address }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="info-title">Store Information</h3>
+                    <div class="detail-list">
+                        <div class="detail-item">
+                            <span class="detail-label">Store Name</span>
+                            <span class="detail-value">{{ order.store.name if order.store else 'N/A' }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Store Address</span>
+                            <span class="detail-value">{{ order.store.address if order.store else 'N/A' }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Store Phone</span>
+                            <span class="detail-value">{{ order.store.phone if order.store else 'N/A' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="info-title">Prescription</h3>
+                    {% if order.prescription %}
+                        {% set pres_name = order.prescription.file_path.split('/')[-1] %}
+                        {% set pres_ext = pres_name.rsplit('.',1)[-1] if '.' in pres_name else '' %}
+                        <div class="detail-list">
+                            <div class="detail-item">
+                                <span class="detail-label">File</span>
+                                <span class="detail-value">
+                                    <a href="{{ url_for('Med_uploaded_file', filename=pres_name) }}" target="_blank" class="file-link">
+                                        View Prescription
+                                    </a>
+                                    {% if pres_ext %}
+                                        <span class="file-type">{{ pres_ext|upper }}</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="no-data">No prescription uploaded</p>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>

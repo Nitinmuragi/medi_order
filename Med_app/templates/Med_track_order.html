@@ -1,0 +1,1308 @@
+{% extends "Med_base.html" %}
+{% block content %}
+
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --primary-light: #3b82f6;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --orange: #c2410c;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --radius: 16px;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: linear-gradient(135deg, #f0f4ff 0%, #f1f5f9 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--gray-900);
+    min-height: 100vh;
+  }
+
+  .page-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ============================================================
+       BACK BUTTON
+    ============================================================ */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--gray-500);
+    text-decoration: none;
+    font-size: .9rem;
+    font-weight: 500;
+    margin-bottom: 1.75rem;
+    transition: color .2s;
+  }
+
+  .back-link:hover {
+    color: var(--primary);
+  }
+
+  .back-link i {
+    font-size: .85rem;
+  }
+
+  /* ============================================================
+       PAGE HEADER
+    ============================================================ */
+  .page-header {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 24px var(--shadow);
+    border: 1px solid var(--gray-200);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  }
+
+  .page-header-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .header-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(30, 58, 138, .2);
+  }
+
+  .header-icon i {
+    font-size: 1.5rem;
+    color: white;
+  }
+
+  .header-text h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: .2rem;
+  }
+
+  .header-text p {
+    color: var(--gray-500);
+    font-size: .92rem;
+  }
+
+  /* ============================================================
+       SEARCH BOX
+    ============================================================ */
+  .search-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 24px var(--shadow);
+    border: 1px solid var(--gray-200);
+  }
+
+  .search-card label {
+    display: block;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: .65rem;
+  }
+
+  .search-row {
+    display: flex;
+    gap: .75rem;
+  }
+
+  .search-input-wrap {
+    flex: 1;
+    position: relative;
+  }
+
+  .search-input-wrap i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-500);
+    font-size: .95rem;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: .85rem 1rem .85rem 2.7rem;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    font-size: .97rem;
+    color: var(--gray-900);
+    background: var(--gray-50);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    font-family: 'SF Mono', Monaco, monospace;
+    letter-spacing: .04em;
+  }
+
+  .search-input::placeholder {
+    color: var(--gray-500);
+    font-family: -apple-system, sans-serif;
+    letter-spacing: 0;
+  }
+
+  .search-input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, .15);
+    background: white;
+  }
+
+  .search-btn {
+    padding: .85rem 1.75rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: .95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    transition: all .25s;
+    box-shadow: 0 4px 14px rgba(30, 58, 138, .2);
+    white-space: nowrap;
+  }
+
+  .search-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(30, 58, 138, .3);
+  }
+
+  .search-btn:active {
+    transform: translateY(0);
+  }
+
+  /* ============================================================
+       LOADING OVERLAY - ANIMATED (NEWLY ADDED)
+    ============================================================ */
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.3s, opacity 0.3s ease;
+  }
+
+  .loading-overlay.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .loading-card {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    max-width: 320px;
+    width: 85%;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .spinner-box {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.2rem;
+    position: relative;
+    background: linear-gradient(145deg, #eef2ff, #ffffff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(30, 58, 138, 0.15);
+  }
+
+  .spinner-box i {
+    font-size: 2.5rem;
+    color: var(--primary-light);
+    animation: pulseIcon 1.2s infinite ease-in-out;
+  }
+
+  @keyframes pulseIcon {
+    0%, 100% {
+      transform: scale(0.95);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
+
+  .dot-loader {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 1rem 0;
+  }
+
+  .dot-loader span {
+    width: 10px;
+    height: 10px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: inline-block;
+    animation: bounce 1.4s infinite ease-in-out both;
+  }
+
+  .dot-loader span:nth-child(1) {
+    animation-delay: -0.32s;
+    background: var(--primary);
+  }
+  .dot-loader span:nth-child(2) {
+    animation-delay: -0.16s;
+    background: var(--primary-light);
+  }
+  .dot-loader span:nth-child(3) {
+    background: var(--primary);
+  }
+
+  @keyframes bounce {
+    0%, 80%, 100% {
+      transform: scale(0.6);
+      opacity: 0.4;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .loading-card h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 0.3rem;
+  }
+
+  .loading-card p {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+  }
+
+  .loading-badge {
+    display: inline-block;
+    background: #eef2ff;
+    color: var(--primary);
+    padding: 0.3rem 1rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-top: 0.8rem;
+  }
+
+  /* ============================================================
+       ERROR / NOT FOUND STATE
+    ============================================================ */
+  .alert-box {
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    font-size: .92rem;
+    font-weight: 500;
+  }
+
+  .alert-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: var(--danger);
+  }
+
+  .alert-error i {
+    font-size: 1.1rem;
+  }
+
+  /* ============================================================
+       ORDER INFO CARD
+    ============================================================ */
+  .order-info-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 24px var(--shadow);
+    border: 1px solid var(--gray-200);
+  }
+
+  .order-info-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: .75rem;
+  }
+
+  .tracking-chip {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--primary);
+    background: rgba(30, 58, 138, .08);
+    border: 1px solid rgba(30, 58, 138, .15);
+    padding: .45rem 1rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+  }
+
+  .order-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+  }
+
+  .meta-label {
+    font-size: .72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--gray-500);
+  }
+
+  .meta-value {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+
+  /* ============================================================
+       STATUS BADGES
+    ============================================================ */
+  .badge {
+    display: inline-block;
+    padding: .35rem .85rem;
+    border-radius: 20px;
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+
+  .badge-new {
+    background: #dbeafe;
+    color: var(--primary);
+  }
+
+  .badge-accepted {
+    background: #dcfce7;
+    color: var(--success);
+  }
+
+  .badge-rejected {
+    background: #fecaca;
+    color: var(--danger);
+  }
+
+  .badge-out_for_delivery {
+    background: #fff7ed;
+    color: var(--orange);
+  }
+
+  .badge-delivered {
+    background: #dcfce7;
+    color: var(--success);
+  }
+
+  .badge-pending {
+    background: #fef3c7;
+    color: var(--warning);
+  }
+
+  .badge-success {
+    background: #dcfce7;
+    color: var(--success);
+  }
+
+  .badge-cod {
+    background: #fef3c7;
+    color: var(--warning);
+  }
+
+  .badge-online {
+    background: #dbeafe;
+    color: var(--primary);
+  }
+
+  /* ============================================================
+       PROGRESS TIMELINE
+    ============================================================ */
+  .timeline-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 24px var(--shadow);
+    border: 1px solid var(--gray-200);
+  }
+
+  .timeline-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+
+  .timeline-card h3 i {
+    color: var(--primary);
+  }
+
+  /* Horizontal progress bar on top */
+  .progress-bar-wrap {
+    margin-bottom: 2rem;
+  }
+
+  .progress-steps {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  .progress-step-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .9rem;
+    border: 2.5px solid var(--gray-200);
+    background: white;
+    color: var(--gray-500);
+    transition: all .4s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  .progress-step.done .progress-step-dot {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(5, 150, 105, .15);
+  }
+
+  .progress-step.active .progress-step-dot {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(30, 58, 138, .15);
+    animation: pulse-dot 2s infinite;
+  }
+
+  .progress-step.rejected .progress-step-dot {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+  }
+
+  @keyframes pulse-dot {
+
+    0%,
+    100% {
+      box-shadow: 0 0 0 4px rgba(30, 58, 138, .15);
+    }
+
+    50% {
+      box-shadow: 0 0 0 8px rgba(30, 58, 138, .08);
+    }
+  }
+
+  .progress-step-label {
+    margin-top: .5rem;
+    font-size: .7rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    line-height: 1.3;
+  }
+
+  .progress-step.done .progress-step-label,
+  .progress-step.active .progress-step-label {
+    color: var(--gray-900);
+  }
+
+  /* Connector lines between dots */
+  .progress-connector {
+    flex: 1;
+    height: 3px;
+    background: var(--gray-200);
+    margin-bottom: 1.4rem;
+    /* align with dots */
+    position: relative;
+    transition: background .4s ease;
+  }
+
+  .progress-connector.filled {
+    background: var(--success);
+  }
+
+  /* ---- Vertical timeline detail ---- */
+  .timeline-list {
+    list-style: none;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 1rem;
+    padding-bottom: 1.4rem;
+    position: relative;
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  /* Vertical line */
+  .timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 36px;
+    width: 2px;
+    bottom: 0;
+    background: var(--gray-200);
+  }
+
+  .timeline-item.done:not(:last-child)::before,
+  .timeline-item.active:not(:last-child)::before {
+    background: linear-gradient(180deg, var(--success), var(--gray-200));
+  }
+
+  .tl-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .9rem;
+    flex-shrink: 0;
+    border: 2px solid var(--gray-200);
+    background: white;
+    color: var(--gray-500);
+    position: relative;
+    z-index: 1;
+    transition: all .3s;
+  }
+
+  .timeline-item.done .tl-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+  }
+
+  .timeline-item.active .tl-icon {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    animation: pulse-dot 2s infinite;
+  }
+
+  .timeline-item.rejected .tl-icon {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+  }
+
+  .tl-body {
+    flex: 1;
+    padding-top: .35rem;
+  }
+
+  .tl-title {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: .2rem;
+  }
+
+  .timeline-item.pending-step .tl-title {
+    color: var(--gray-500);
+    font-weight: 500;
+  }
+
+  .tl-desc {
+    font-size: .82rem;
+    color: var(--gray-500);
+    line-height: 1.5;
+  }
+
+  .tl-time {
+    font-size: .75rem;
+    color: var(--gray-500);
+    margin-top: .25rem;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+  }
+
+  /* ============================================================
+       PAYMENT INFO CARD
+    ============================================================ */
+  .payment-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 24px var(--shadow);
+    border: 1px solid var(--gray-200);
+  }
+
+  .payment-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+
+  .payment-card h3 i {
+    color: var(--success);
+  }
+
+  .payment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .65rem 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: .92rem;
+  }
+
+  .payment-row:last-child {
+    border-bottom: none;
+  }
+
+  .payment-row .label {
+    color: var(--gray-500);
+    font-weight: 500;
+  }
+
+  .payment-row .value {
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+
+  .payment-row.total .value {
+    font-size: 1.1rem;
+    color: var(--primary);
+  }
+
+  /* Pay Now button */
+  .pay-now-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    width: 100%;
+    padding: .9rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 1rem;
+    transition: all .25s;
+    box-shadow: 0 4px 16px rgba(30, 58, 138, .2);
+  }
+
+  .pay-now-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(30, 58, 138, .3);
+    color: white;
+  }
+
+  /* ============================================================
+       DELIVERY ADDRESS CARD
+    ============================================================ */
+  .address-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    box-shadow: 0 4px 24px var(--shadow);
+    border: 1px solid var(--gray-200);
+  }
+
+  .address-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: .85rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+
+  .address-card h3 i {
+    color: var(--primary-light);
+  }
+
+  .address-text {
+    font-size: .92rem;
+    color: var(--gray-700);
+    line-height: 1.65;
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: .85rem 1rem;
+    border: 1px solid var(--gray-200);
+  }
+
+  /* ============================================================
+       EMPTY / SEARCH PROMPT STATE
+    ============================================================ */
+  .prompt-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: var(--radius);
+    border: 2px dashed var(--gray-200);
+    box-shadow: 0 4px 24px var(--shadow);
+  }
+
+  .prompt-state i {
+    font-size: 3.5rem;
+    color: var(--gray-500);
+    opacity: .4;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .prompt-state h3 {
+    color: var(--gray-700);
+    font-size: 1.2rem;
+    margin-bottom: .5rem;
+  }
+
+  .prompt-state p {
+    color: var(--gray-500);
+    font-size: .9rem;
+  }
+
+  /* ============================================================
+       RESPONSIVE — MOBILE
+    ============================================================ */
+  @media (max-width: 767px) {
+    .page-container {
+      padding: 1.2rem .9rem 5rem;
+    }
+
+    .page-header {
+      padding: 1.3rem 1.2rem;
+      border-radius: 14px;
+    }
+
+    .header-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+    }
+
+    .header-icon i {
+      font-size: 1.3rem;
+    }
+
+    .header-text h1 {
+      font-size: 1.2rem;
+    }
+
+    .header-text p {
+      font-size: .82rem;
+    }
+
+    .search-card {
+      padding: 1.2rem;
+      border-radius: 14px;
+    }
+
+    .search-row {
+      flex-direction: column;
+      gap: .65rem;
+    }
+
+    .search-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .order-info-card,
+    .timeline-card,
+    .payment-card,
+    .address-card {
+      padding: 1.2rem;
+      border-radius: 14px;
+    }
+
+    .order-meta-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: .85rem;
+    }
+
+    /* Horizontal progress — show only dots + connectors, hide labels below */
+    .progress-step-label {
+      font-size: .62rem;
+    }
+
+    .progress-step-dot {
+      width: 30px;
+      height: 30px;
+      font-size: .78rem;
+    }
+
+    .progress-connector {
+      margin-bottom: 1.1rem;
+    }
+
+    .tl-title {
+      font-size: .88rem;
+    }
+
+    .tl-desc {
+      font-size: .78rem;
+    }
+
+    .payment-row {
+      font-size: .88rem;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .order-meta-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .order-info-top {
+      flex-direction: column;
+    }
+
+    .progress-step-label {
+      display: none;
+    }
+  }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Loading Overlay HTML -->
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-card">
+    <div class="spinner-box">
+      <i class="fas fa-pills"></i>
+    </div>
+    <div class="dot-loader">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <h4>Tracking Your Order</h4>
+    <p>Please wait while we fetch the latest status...</p>
+    <div class="loading-badge">
+      <i class="fas fa-sync-alt"></i> Secure connection
+    </div>
+  </div>
+</div>
+
+<div class="page-container">
+
+  <!-- Back -->
+  <a href="{{ url_for('Med_user.Med_dashboard') }}" class="back-link">
+    <i class="fas fa-arrow-left"></i> Back to Dashboard
+  </a>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="header-icon">
+        <i class="fas fa-map-marker-alt"></i>
+      </div>
+      <div class="header-text">
+        <h1>Track Your Order</h1>
+        <p>Enter your tracking ID to see real-time order status</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Box -->
+  <div class="search-card">
+    <form method="GET" action="{{ url_for('Med_user.Med_track_order') }}" id="trackOrderForm">
+      <label for="tracking_id">Enter Tracking ID</label>
+      <div class="search-row">
+        <div class="search-input-wrap">
+          <i class="fas fa-hashtag"></i>
+          <input type="text" class="search-input" id="tracking_id" name="tracking_id"
+            placeholder="e.g. TRK-20240101-XXXX" value="{{ tracking_id if tracking_id else '' }}" autocomplete="off"
+            required>
+        </div>
+        <button type="submit" class="search-btn" id="trackBtn">
+          <i class="fas fa-search"></i>
+          <span>Track</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  {% if error %}
+  <!-- Error -->
+  <div class="alert-box alert-error">
+    <i class="fas fa-exclamation-circle"></i>
+    {{ error }}
+  </div>
+  {% endif %}
+
+  {% if order %}
+  <!-- ================================================
+         ORDER INFO CARD
+    ================================================ -->
+  <div class="order-info-card">
+    <div class="order-info-top">
+      <span class="tracking-chip">
+        <i class="fas fa-hashtag"></i>{{ order.tracking_id }}
+      </span>
+      <span class="badge badge-{{ order.order_status|lower }}">
+        {{ order.order_status | replace('_', ' ') }}
+      </span>
+    </div>
+    <div class="order-meta-grid">
+      <div class="meta-item">
+        <span class="meta-label">Patient</span>
+        <span class="meta-value">{{ order.user.full_name }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Order Date</span>
+        <span class="meta-value">{{ order.created_at.strftime("%b %d, %Y") }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Store</span>
+        <span class="meta-value">{{ order.store.name if order.store else '—' }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Payment</span>
+        <span class="meta-value">
+          <span class="badge badge-{{ order.payment_method|lower }}">{{ order.payment_method }}</span>
+        </span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Pay Status</span>
+        <span class="meta-value">
+          <span class="badge badge-{{ order.payment_status|lower }}">{{ order.payment_status }}</span>
+        </span>
+      </div>
+      {% if order.medicine_total > 0 %}
+      <div class="meta-item">
+        <span class="meta-label">Total Amount</span>
+        <span class="meta-value" style="color:var(--primary); font-size:1.05rem;">
+          ₹{{ "%.2f"|format(order.total_amount) }}
+        </span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ================================================
+         PROGRESS TIMELINE
+    ================================================ -->
+  {% set status = order.order_status %}
+  {% set is_rejected = (status == 'REJECTED') %}
+
+  {# Determine step index: 0=NEW, 1=ACCEPTED, 2=OUT_FOR_DELIVERY, 3=DELIVERED #}
+  {% if status == 'NEW' %} {% set step = 0 %}
+  {% elif status == 'ACCEPTED' or status == 'PREPARING' %} {% set step = 1 %}
+  {% elif status == 'OUT_FOR_DELIVERY' %} {% set step = 2 %}
+  {% elif status == 'DELIVERED' %} {% set step = 3 %}
+  {% else %} {% set step = 0 %}
+  {% endif %}
+
+  <div class="timeline-card">
+    <h3><i class="fas fa-route"></i> Order Progress</h3>
+    <!-- Vertical timeline detail -->
+    <ul class="timeline-list">
+
+      <!-- Order Placed -->
+      <li class="timeline-item done">
+        <div class="tl-icon"><i class="fas fa-clipboard-list"></i></div>
+        <div class="tl-body">
+          <div class="tl-title">Order Placed</div>
+          <div class="tl-desc">Your order was successfully placed and sent to the medical store.</div>
+          <div class="tl-time"><i class="far fa-clock"></i> {{ order.created_at.strftime("%b %d, %Y %I:%M %p") }}</div>
+        </div>
+      </li>
+
+      {% if is_rejected %}
+      <!-- Rejected -->
+      <li class="timeline-item rejected">
+        <div class="tl-icon"><i class="fas fa-times-circle"></i></div>
+        <div class="tl-body">
+          <div class="tl-title" style="color:var(--danger);">Order Rejected</div>
+          <div class="tl-desc">
+            {% if order.rejection_reason %}
+            Reason: {{ order.rejection_reason }}
+            {% else %}
+            The store was unable to fulfill this order. Please place a new order.
+            {% endif %}
+          </div>
+        </div>
+      </li>
+
+      {% else %}
+
+      <!-- Store Accepted -->
+      <li class="timeline-item {% if step >= 1 %}done{% elif step == 0 %}pending-step{% endif %}">
+        <div class="tl-icon"><i class="fas fa-store"></i></div>
+        <div class="tl-body">
+          <div class="tl-title">Store Accepted</div>
+          <div class="tl-desc">
+            {% if step >= 1 %}
+            {{ order.store.name if order.store else 'The store' }} accepted your order and is preparing your medicines.
+            {% if order.medicine_total > 0 %}
+            Total: ₹{{ "%.2f"|format(order.total_amount) }}
+            (Medicine ₹{{ "%.2f"|format(order.medicine_total) }} + Delivery ₹{{ "%.2f"|format(order.delivery_charge) }})
+            {% endif %}
+            {% else %}
+            Waiting for store to review and accept your order.
+            {% endif %}
+          </div>
+        </div>
+      </li>
+
+      <!-- Out for Delivery -->
+      <li
+        class="timeline-item {% if step > 2 %}done{% elif step == 2 %}active{% elif step < 2 %}pending-step{% endif %}">
+        <div class="tl-icon"><i class="fas fa-motorcycle"></i></div>
+        <div class="tl-body">
+          <div class="tl-title">Out for Delivery</div>
+          <div class="tl-desc">
+            {% if step >= 2 %}
+            Your medicines are on the way! Our delivery partner is heading to your address.
+            {% else %}
+            Your order will be dispatched after preparation.
+            {% endif %}
+          </div>
+        </div>
+      </li>
+
+      <!-- Delivered -->
+      <li class="timeline-item {% if step == 3 %}done{% else %}pending-step{% endif %}">
+        <div class="tl-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="tl-body">
+          <div class="tl-title">Delivered</div>
+          <div class="tl-desc">
+            {% if step == 3 %}
+            Your order has been successfully delivered. Thank you! 🎉
+            {% else %}
+            Your order will be marked delivered once received.
+            {% endif %}
+          </div>
+        </div>
+      </li>
+
+      {% endif %}
+    </ul>
+  </div>
+
+  <!-- ================================================
+         PAYMENT CARD
+    ================================================ -->
+  <div class="payment-card">
+    <h3><i class="fas fa-receipt"></i> Payment Details</h3>
+
+    {% if order.medicine_total > 0 %}
+    <div class="payment-row">
+      <span class="label"><i class="fas fa-pills" style="margin-right:.4rem; color:var(--primary-light);"></i>Medicine
+        Amount</span>
+      <span class="value">₹{{ "%.2f"|format(order.medicine_total) }}</span>
+    </div>
+    <div class="payment-row">
+      <span class="label"><i class="fas fa-motorcycle" style="margin-right:.4rem; color:var(--warning);"></i>Delivery
+        Charge</span>
+      <span class="value">₹{{ "%.2f"|format(order.delivery_charge) }}</span>
+    </div>
+    <div class="payment-row total">
+      <span class="label" style="font-weight:700; color:var(--gray-900);">Grand Total</span>
+      <span class="value">₹{{ "%.2f"|format(order.total_amount) }}</span>
+    </div>
+    {% else %}
+    <div class="payment-row">
+      <span class="label">Amount</span>
+      <span class="value"><span class="badge badge-pending">Awaiting store approval</span></span>
+    </div>
+    {% endif %}
+
+    <div class="payment-row">
+      <span class="label">Payment Method</span>
+      <span class="value"><span class="badge badge-{{ order.payment_method|lower }}">{{ order.payment_method
+          }}</span></span>
+    </div>
+    <div class="payment-row">
+      <span class="label">Payment Status</span>
+      <span class="value">
+        {% if order.payment_status == 'SUCCESS' %}
+        <span style="color:var(--success); font-weight:700;"><i class="fas fa-check-circle"></i> Paid</span>
+        {% else %}
+        <span class="badge badge-pending">{{ order.payment_status }}</span>
+        {% endif %}
+      </span>
+    </div>
+
+    {% if order.payment_method == "ONLINE" and order.payment_status == "PENDING" and order.order_status == 'ACCEPTED' %}
+    <a href="{{ url_for('Med_payment.Med_pay', order_id=order.id) }}" class="pay-now-btn">
+      <i class="fas fa-credit-card"></i> Pay Now — ₹{{ "%.2f"|format(order.total_amount) }}
+    </a>
+    {% endif %}
+  </div>
+
+  <!-- ================================================
+         DELIVERY ADDRESS
+    ================================================ -->
+  <div class="address-card">
+    <h3><i class="fas fa-map-marker-alt"></i> Delivery Address</h3>
+    <div class="address-text">{{ order.delivery_address }}</div>
+  </div>
+
+  {% elif tracking_id and not error %}
+  <!-- Empty prompt if searched but nothing found -->
+  <div class="prompt-state">
+    <i class="fas fa-search"></i>
+    <h3>Order not found</h3>
+    <p>No order found with tracking ID <strong>{{ tracking_id }}</strong>. Please check and try again.</p>
+  </div>
+
+  {% else %}
+  <!-- Default prompt (no search yet) -->
+  <div class="prompt-state">
+    <i class="fas fa-box-open"></i>
+    <h3>Enter your Tracking ID</h3>
+    <p>Type your tracking ID above to see the live status of your order.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- JavaScript to show loading animation on form submit -->
+<script>
+  (function() {
+    const form = document.getElementById('trackOrderForm');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const trackBtn = document.getElementById('trackBtn');
+    
+    if (form && loadingOverlay) {
+      form.addEventListener('submit', function(e) {
+        // Show loading animation
+        loadingOverlay.classList.add('active');
+        
+        // Optional: disable button to prevent double submission
+        if (trackBtn) {
+          trackBtn.disabled = true;
+          trackBtn.style.opacity = '0.7';
+          trackBtn.style.cursor = 'wait';
+        }
+      
+      });
+    }
+    
+    // If order is already loaded, hide loading if it's showing
+    // (in case of form resubmission or back button)
+    if (loadingOverlay && {{ order is not none|tojson }}) {
+      loadingOverlay.classList.remove('active');
+      if (trackBtn) {
+        trackBtn.disabled = false;
+        trackBtn.style.opacity = '1';
+        trackBtn.style.cursor = 'pointer';
+      }
+    }
+  })();
+</script>
+
+{% endblock %}

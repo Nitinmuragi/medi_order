@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+**/.env
+Med_app/.env
+uploads/
+*.log
+instance/

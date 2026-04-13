@@ -1,0 +1,2194 @@
+{% extends "Med_base.html" %}
+{% block content %}
+
+<link
+  href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@500;600;700&display=swap"
+  rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<style>
+  body>nav.navbar,
+  body>footer.footer {
+    display: none;
+  }
+
+  main,
+  main>.container.mt-3 {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  :root {
+    --ink-900: #0b1b3a;
+    --ink-700: #233a63;
+    --ink-500: #53709e;
+    --line-soft: #dbe4f2;
+    --surface-0: #f4f8ff;
+    --surface-1: #ffffff;
+    --primary: #0e6eff;
+    --accent: #18a38a;
+    --warning: #f59e0b;
+    --radius-xl: 18px;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background:
+      radial-gradient(circle at 8% 8%, #e2edff 0%, rgba(226, 237, 255, 0) 38%),
+      radial-gradient(circle at 92% 15%, #dff6ef 0%, rgba(223, 246, 239, 0) 30%),
+      linear-gradient(180deg, #f8fbff 0%, #eef3fb 100%);
+    color: var(--ink-900);
+  }
+
+  .dash-root {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: #0f1d3a;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 0 24px;
+    position: relative;
+  }
+
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .sidebar-brand {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    margin-bottom: 20px;
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+    background: #2563eb;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: #fff;
+  }
+
+  .brand-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .brand-sub {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 1px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .nav-section {
+    padding: 0 12px;
+    flex: 1;
+  }
+
+  .nav-label {
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.25);
+    padding: 0 12px;
+    margin: 16px 0 8px;
+    font-weight: 500;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    margin-bottom: 2px;
+    font-size: 13px;
+    font-weight: 400;
+    text-decoration: none;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .nav-item.active {
+    background: #2563eb;
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .nav-item svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .nav-dot {
+    margin-left: auto;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f59e0b;
+  }
+
+  .sidebar-footer {
+    padding: 16px 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin-top: 16px;
+  }
+
+  .sidebar-logout {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #fecaca !important;
+  }
+
+  .sidebar-logout:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #fca5a5 !important;
+  }
+
+  .admin-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .admin-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .admin-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .admin-role {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 1px;
+  }
+
+  /* ── Main ── */
+  .main {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: #2f67ff #dbe4f2;
+    scrollbar-gutter: stable;
+  }
+
+  .main::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .main::-webkit-scrollbar-track {
+    background: #dbe4f2;
+    border-radius: 999px;
+  }
+
+  .main::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #2f67ff 0%, #18a38a 100%);
+    border-radius: 999px;
+    border: 2px solid #dbe4f2;
+  }
+
+  .main::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #2456d1 0%, #148571 100%);
+  }
+
+  .main::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(14, 110, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 110, 255, 0.03) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 85%);
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(219, 228, 242, 0.8);
+    padding: 0 28px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .topbar-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink-900);
+    letter-spacing: 0.01em;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .theme-toggle {
+    border: 1px solid #d9e5fb;
+    background: #eef4ff;
+    color: #35507a;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background .16s ease, color .16s ease;
+  }
+
+  .theme-toggle:hover {
+    background: #dbe9ff;
+    color: #0e6eff;
+  }
+
+  .date-chip {
+    font-size: 11.5px;
+    color: #8a90a5;
+    background: #f4f6fb;
+    border: 1px solid #e8eaf0;
+    padding: 5px 10px;
+    border-radius: 6px;
+  }
+
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #f4f6fb;
+    border: 1px solid #e8eaf0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .icon-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: #6b7290;
+    fill: none;
+  }
+
+  .notif-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 7px;
+    height: 7px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 1.5px solid #fff;
+  }
+
+  /* ── Flash messages ── */
+  .flash-wrap {
+    padding: 12px 28px 0;
+  }
+
+  .flash-msg {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .flash-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+  }
+
+  .flash-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+  }
+
+  .flash-info {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+  }
+
+  .flash-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+  }
+
+  /* ── Content ── */
+  .content {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .hero-banner {
+    background: linear-gradient(130deg, #0c1f48 0%, #123976 46%, #0e6eff 100%);
+    border-radius: var(--radius-xl);
+    padding: 22px 24px;
+    color: #fff;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 26px 45px -28px rgba(12, 31, 72, 0.9);
+    overflow: hidden;
+    position: relative;
+    animation: revealY .45s ease-out both;
+  }
+
+  .hero-banner::before,
+  .hero-banner::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .hero-banner::before {
+    width: 220px;
+    height: 220px;
+    right: -70px;
+    top: -90px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
+  }
+
+  .hero-banner::after {
+    width: 160px;
+    height: 160px;
+    right: 120px;
+    bottom: -95px;
+    background: radial-gradient(circle, rgba(24, 163, 138, 0.7), rgba(24, 163, 138, 0));
+  }
+
+  .hero-kicker {
+    font-size: 11px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.76);
+    margin-bottom: 7px;
+    font-weight: 500;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-desc {
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 680px;
+    font-size: 12.5px;
+  }
+
+  .hero-pulse {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    backdrop-filter: blur(2px);
+  }
+
+  .hero-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    animation: pulse 1.7s infinite;
+  }
+
+  .hero-tools {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hero-tool-btn {
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    border-radius: 9px;
+    padding: 8px 11px;
+    font-size: 11.5px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+
+  .hero-tool-btn:hover {
+    background: rgba(255, 255, 255, 0.24);
+  }
+
+  .range-btn.active {
+    background: #ffffff;
+    color: #0f1d3a;
+    border-color: #ffffff;
+    font-weight: 700;
+  }
+
+  /* ── Metric Grid ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .metric-card {
+    background: rgba(255, 255, 255, 0.86);
+    border-radius: 14px;
+    border: 1px solid rgba(219, 228, 242, 0.95);
+    backdrop-filter: blur(4px);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .18s ease, box-shadow .18s ease;
+    animation: revealY .45s ease-out both;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 26px -22px rgba(12, 31, 72, 0.75);
+  }
+
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .mc-blue::before {
+    background: #2563eb;
+  }
+
+  .mc-teal::before {
+    background: #0d9488;
+  }
+
+  .mc-amber::before {
+    background: #f59e0b;
+  }
+
+  .mc-violet::before {
+    background: #7c3aed;
+  }
+
+  .metric-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .metric-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mi-blue {
+    background: #eff6ff;
+  }
+
+  .mi-teal {
+    background: #f0fdfa;
+  }
+
+  .mi-amber {
+    background: #fffbeb;
+  }
+
+  .mi-violet {
+    background: #f5f3ff;
+  }
+
+  .metric-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .metric-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f1d3a;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .metric-label {
+    font-size: 11.5px;
+    color: #8a90a5;
+    margin-top: 3px;
+  }
+
+  .metric-sub {
+    font-size: 11px;
+    color: #8a90a5;
+    margin-top: 6px;
+  }
+
+  .metric-sub span {
+    font-weight: 500;
+    color: #0f1d3a;
+  }
+
+  /* ── Two-col layout ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* ── Table Card ── */
+  .table-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 14px;
+    border: 1px solid rgba(219, 228, 242, 0.95);
+    overflow: hidden;
+    animation: revealY .5s ease-out both;
+  }
+
+  .card-head {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f1f3f8;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f1d3a;
+  }
+
+  .card-sub {
+    font-size: 11px;
+    color: #8a90a5;
+    margin-top: 2px;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table th {
+    padding: 10px 16px;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #8a90a5;
+    font-weight: 500;
+    text-align: left;
+    background: #fafbfd;
+    border-bottom: 1px solid #f1f3f8;
+  }
+
+  .data-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid #f8f9fc;
+    font-size: 12.5px;
+    color: #374151;
+    vertical-align: middle;
+  }
+
+  .data-table td.amount-cell {
+    font-weight: 700;
+    color: #0e6eff;
+  }
+
+  .data-table td.amount-cell.is-failed {
+    color: #9ca3af;
+    text-decoration: line-through;
+  }
+
+  .data-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .data-table tr:hover td {
+    background: #eef4ff;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .status-badge::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .sb-delivered {
+    background: #f0fdf4;
+    color: #16a34a;
+  }
+
+  .sb-delivered::before {
+    background: #16a34a;
+  }
+
+  .sb-pending {
+    background: #fffbeb;
+    color: #b45309;
+  }
+
+  .sb-pending::before {
+    background: #f59e0b;
+  }
+
+  .sb-cancelled {
+    background: #fef2f2;
+    color: #b91c1c;
+  }
+
+  .sb-cancelled::before {
+    background: #ef4444;
+  }
+
+  .sb-confirmed {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .sb-confirmed::before {
+    background: #3b82f6;
+  }
+
+  .sb-default {
+    background: #f4f6fb;
+    color: #6b7290;
+  }
+
+  .sb-default::before {
+    background: #9ca3af;
+  }
+
+  .pay-pill {
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .pp-paid {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .pp-pending {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .pp-failed {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .pp-default {
+    background: #f4f6fb;
+    color: #6b7290;
+  }
+
+  .tracking-code {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    background: #f1f5ff;
+    color: #2563eb;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .view-btn {
+    background: #f4f6fb;
+    border: 1px solid #e2e6f0;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: #374151;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .view-btn:hover {
+    background: #e8eaf0;
+    color: #0f1d3a;
+  }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .user-ava {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  /* ── Analytics Card ── */
+  .analytics-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 14px;
+    border: 1px solid rgba(219, 228, 242, 0.95);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: revealY .55s ease-out both;
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 16px;
+    padding: 0 16px 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    color: #8a90a5;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 3px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  .chart-wrap {
+    padding: 12px 16px 16px;
+    position: relative;
+    height: 220px;
+    background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+  }
+
+  .chart-wrap canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .chart-stats {
+    padding: 12px 20px 16px;
+    border-top: 1px solid #f1f3f8;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .chart-stat-box {
+    background: #f4f6fb;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .cs-label {
+    font-size: 10.5px;
+    color: #8a90a5;
+    margin-bottom: 4px;
+  }
+
+  .cs-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f1d3a;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .cs-sub {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  /* ── Bottom Row ── */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .store-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #f8f9fc;
+  }
+
+  .store-item:last-child {
+    border-bottom: none;
+  }
+
+  .store-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .store-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .store-name {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #0f1d3a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .store-type {
+    font-size: 11px;
+    color: #8a90a5;
+    margin-top: 1px;
+  }
+
+  .store-bar-wrap {
+    height: 3px;
+    background: #f1f3f8;
+    border-radius: 2px;
+    margin-top: 4px;
+  }
+
+  .store-bar {
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  .store-val {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .store-amount {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f1d3a;
+  }
+
+  .store-orders-count {
+    font-size: 10.5px;
+    color: #8a90a5;
+    margin-top: 1px;
+  }
+
+  /* ── Activity Feed ── */
+  .activity-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 14px;
+    border: 1px solid rgba(219, 228, 242, 0.95);
+    animation: revealY .6s ease-out both;
+  }
+
+  .quick-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-bottom: 8px;
+  }
+
+  .quick-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #fff;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+  }
+
+  .quick-action-btn:hover {
+    transform: translateY(-2px);
+    filter: saturate(1.08);
+  }
+
+  .qa-blue {
+    background: linear-gradient(115deg, #0e6eff, #1f59d6);
+    box-shadow: 0 14px 20px -14px rgba(14, 110, 255, 0.75);
+  }
+
+  .qa-teal {
+    background: linear-gradient(115deg, #18a38a, #0d8079);
+    box-shadow: 0 14px 20px -14px rgba(24, 163, 138, 0.72);
+  }
+
+  .logout-link {
+    font-size: 12px;
+    color: #35507a;
+    text-decoration: none;
+    padding: 5px 10px;
+    background: #eef4ff;
+    border: 1px solid #d9e5fb;
+    border-radius: 8px;
+    transition: background .16s ease, color .16s ease;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .logout-link:hover {
+    background: #dbe9ff;
+    color: #0e6eff;
+  }
+
+  .logout-link:active {
+    transform: scale(0.98);
+  }
+
+  body.admin-dark {
+    background:
+      radial-gradient(circle at 7% 10%, #22314f 0%, rgba(34, 49, 79, 0) 30%),
+      radial-gradient(circle at 92% 15%, #1d3e42 0%, rgba(29, 62, 66, 0) 30%),
+      linear-gradient(180deg, #101826 0%, #0c1320 100%);
+  }
+
+  body.admin-dark .main::before {
+    background-image: linear-gradient(rgba(129, 160, 214, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(129, 160, 214, 0.08) 1px, transparent 1px);
+  }
+
+  body.admin-dark .topbar {
+    background: rgba(16, 24, 38, 0.86);
+    border-bottom-color: rgba(71, 92, 130, 0.5);
+  }
+
+  body.admin-dark .topbar-title,
+  body.admin-dark .metric-value,
+  body.admin-dark .card-title,
+  body.admin-dark .cs-value,
+  body.admin-dark .store-name,
+  body.admin-dark .store-amount,
+  body.admin-dark .act-store,
+  body.admin-dark .act-text,
+  body.admin-dark .data-table td,
+  body.admin-dark .logout-link,
+  body.admin-dark .theme-toggle,
+  body.admin-dark .admin-name {
+    color: #d8e6ff;
+  }
+
+  body.admin-dark .date-chip,
+  body.admin-dark .icon-btn,
+  body.admin-dark .logout-link,
+  body.admin-dark .theme-toggle,
+  body.admin-dark .chart-stat-box,
+  body.admin-dark .sb-default,
+  body.admin-dark .pp-default,
+  body.admin-dark .view-btn,
+  body.admin-dark .tracking-code,
+  body.admin-dark .store-bar-wrap,
+  body.admin-dark .data-table th {
+    background: #18263f;
+    border-color: #2b3e63;
+    color: #acc2e9;
+  }
+
+  body.admin-dark .sidebar-logout {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #ff8b8b !important;
+  }
+
+  body.admin-dark .sidebar-logout:hover {
+    background: rgba(239, 68, 68, 0.25) !important;
+    color: #ffb3b3 !important;
+  }
+
+  body.admin-dark .table-card,
+  body.admin-dark .analytics-card,
+  body.admin-dark .activity-card,
+  body.admin-dark .metric-card {
+    background: rgba(20, 31, 50, 0.88);
+    border-color: #2b3e63;
+  }
+
+  body.admin-dark .card-head,
+  body.admin-dark .data-table th,
+  body.admin-dark .data-table td,
+  body.admin-dark .activity-item,
+  body.admin-dark .store-item,
+  body.admin-dark .chart-stats {
+    border-color: #263652;
+  }
+
+  body.admin-dark .data-table tr:hover td {
+    background: rgba(14, 110, 255, 0.08);
+  }
+
+  body.admin-dark .data-table td.amount-cell {
+    color: #7cb2ff;
+  }
+
+  body.admin-dark .data-table td.amount-cell.is-failed {
+    color: #93a4bf;
+  }
+
+  body.admin-dark .card-sub,
+  body.admin-dark .metric-label,
+  body.admin-dark .metric-sub,
+  body.admin-dark .store-type,
+  body.admin-dark .store-orders-count,
+  body.admin-dark .act-time,
+  body.admin-dark .legend-item,
+  body.admin-dark .cs-label,
+  body.admin-dark .date-chip,
+  body.admin-dark .admin-role {
+    color: #8ca4ca;
+  }
+
+  body.admin-dark .quick-action-btn,
+  body.admin-dark .hero-tool-btn {
+    border-color: rgba(255, 255, 255, 0.24);
+  }
+
+  @keyframes revealY {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    }
+
+    70% {
+      box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
+
+    100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #f8f9fc;
+  }
+
+  .activity-item:last-child {
+    border-bottom: none;
+  }
+
+  .act-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .act-text {
+    font-size: 12px;
+    color: #374151;
+    line-height: 1.5;
+  }
+
+  .act-store {
+    font-weight: 500;
+    color: #0f1d3a;
+  }
+
+  .act-time {
+    font-size: 10.5px;
+    color: #9ca3af;
+    margin-top: 2px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #8a90a5;
+    font-size: 13px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1100px) {
+    .two-col {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .metric-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .bottom-row {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+      width: 180px;
+      min-width: 180px;
+    }
+
+    .hero-banner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Mobile Hamburger Button */
+  .mobile-menu-toggle {
+    display: none;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #d9e5fb;
+    background: #f4f6fb;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    margin-right: 10px;
+    flex-shrink: 0;
+    transition: background .16s ease;
+  }
+
+  .mobile-menu-toggle:hover {
+    background: #eef4ff;
+  }
+
+  .mobile-menu-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #6b7290;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: all .25s ease;
+    border-radius: 1px;
+  }
+
+  .mobile-menu-toggle span:nth-child(1) {
+    top: calc(50% - 6px);
+  }
+
+  .mobile-menu-toggle span:nth-child(3) {
+    top: calc(50% + 6px);
+  }
+
+  .mobile-menu-toggle.active span:nth-child(1) {
+    transform: translate(-50%, 6px) rotate(45deg);
+  }
+
+  .mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-toggle.active span:nth-child(3) {
+    transform: translate(-50%, -6px) rotate(-45deg);
+  }
+
+  /* Mobile Sidebar Overlay */
+  .mobile-sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity .25s ease;
+    pointer-events: none;
+  }
+
+  .mobile-sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (max-width: 640px) {
+    .mobile-menu-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .topbar-title {
+      font-size: 15px;
+    }
+
+    .dash-root {
+      flex-direction: column;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 240px;
+      height: 100vh;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+      min-width: 240px;
+    }
+
+    .sidebar.mobile-active {
+      transform: translateX(0);
+    }
+
+    .main {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    .mobile-sidebar-overlay {
+      display: block;
+    }
+
+    .mobile-sidebar-overlay.active {
+      pointer-events: auto;
+    }
+
+    .metric-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    .topbar {
+      padding: 0 16px;
+    }
+
+    .date-chip,
+    .icon-btn {
+      display: none;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logout-link {
+      padding: 6px 12px;
+      font-size: 11.5px;
+    }
+
+    .theme-toggle {
+      padding: 6px 8px;
+      font-size: 11px;
+    }
+  }
+</style>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-wrap">
+  {% for category, message in messages %}
+  <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="dash-root">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name">MediOrder</div>
+          <div class="brand-sub">Admin Portal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Main</div>
+      <a href="{{ url_for('Med_admin.Med_admin_dashboard') }}" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+        </svg>
+        Dashboard
+      </a>
+      <a href="{{ url_for('Med_admin.Med_manage_users') }}" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+        </svg>
+        Manage Users
+        {% if total_users %}<div class="nav-dot"></div>{% endif %}
+      </a>
+      <a href="{{ url_for('Med_admin.Med_manage_stores') }}" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z" />
+        </svg>
+        Manage Stores
+      </a>
+
+      <div class="nav-label">Analytics</div>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z" />
+        </svg>
+        Reports
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
+        </svg>
+        Revenue
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="admin-pill">
+        <div class="admin-avatar">{{ current_user.full_name[:2].upper() if current_user.full_name else 'AD' }}</div>
+        <div>
+          <div class="admin-name">{{ current_user.full_name or 'Admin' }}</div>
+          <div class="admin-role">Super Admin</div>
+        </div>
+      </div>
+      <a href="{{ url_for(logout_endpoint) if logout_endpoint else '#' }}" class="nav-item sidebar-logout"
+        style="margin-top: 12px;">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+        </svg>
+        Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- ── Main Area ── -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Toggle mobile navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="topbar-title">Admin Data Center</div>
+      <div class="topbar-right">
+        <button class="theme-toggle" id="themeToggleBtn" type="button" aria-label="Toggle light and dark theme">
+          <span id="themeToggleIcon">🌙</span>
+          <span id="themeToggleText">Dark</span>
+        </button>
+        <div class="date-chip" id="liveDateChip">Loading…</div>
+        <div class="icon-btn">
+          <svg viewBox="0 0 24 24" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <div class="notif-badge"></div>
+        </div>
+        <a href="{{ url_for(logout_endpoint) if logout_endpoint else '#' }}" class="logout-link">Logout</a>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <section class="hero-banner">
+        <div>
+          <div class="hero-kicker">Operations snapshot</div>
+          <div class="hero-title">Medical Delivery Admin Dashboard</div>
+          <p class="hero-desc">Monitor user growth, order health, and store performance in one streamlined control panel
+            designed for day-to-day decision making.</p>
+          <div class="hero-tools">
+            <button class="hero-tool-btn" id="downloadRevenueBtn" type="button" title="Download monthly revenue CSV">
+              <span>⬇</span>
+              Revenue Report
+            </button>
+            <button class="hero-tool-btn" id="downloadOrdersBtn" type="button" title="Download recent orders CSV">
+              <span>⬇</span>
+              Orders Report
+            </button>
+          </div>
+        </div>
+        <div class="hero-pulse">
+          <span class="hero-pulse-dot"></span>
+          Live operations active
+        </div>
+      </section>
+
+      <!-- ── Metric Cards ── -->
+      <div class="metric-grid">
+
+        <div class="metric-card mc-blue">
+          <div class="metric-top">
+            <div class="metric-icon mi-blue">
+              <svg viewBox="0 0 24 24" fill="#2563eb">
+                <path
+                  d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.9 18 9 18h12v-2H9.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H19c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 23.45 5H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <div class="metric-value">{{ total_orders }}</div>
+            <div class="metric-label">Total orders</div>
+          </div>
+          <div class="metric-sub">Platform lifetime orders</div>
+        </div>
+
+        <div class="metric-card mc-teal">
+          <div class="metric-top">
+            <div class="metric-icon mi-teal">
+              <svg viewBox="0 0 24 24" fill="#0d9488">
+                <path
+                  d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <div class="metric-value">{{ total_users }}</div>
+            <div class="metric-label">Total customers</div>
+          </div>
+          <div class="metric-sub"><span>{{ active_users }}</span> active last 30 days</div>
+        </div>
+
+        <div class="metric-card mc-amber">
+          <div class="metric-top">
+            <div class="metric-icon mi-amber">
+              <svg viewBox="0 0 24 24" fill="#f59e0b">
+                <path
+                  d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <div class="metric-value">₹{{ "%.0f"|format(revenue) }}</div>
+            <div class="metric-label">Total revenue</div>
+          </div>
+          <div class="metric-sub">Successful payments only</div>
+        </div>
+
+        <div class="metric-card mc-violet">
+          <div class="metric-top">
+            <div class="metric-icon mi-violet">
+              <svg viewBox="0 0 24 24" fill="#7c3aed">
+                <path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <div class="metric-value">{{ total_stores }}</div>
+            <div class="metric-label">Total stores</div>
+          </div>
+          <div class="metric-sub">Registered on platform</div>
+        </div>
+
+      </div>
+
+      <!-- ── Table + Chart ── -->
+      <div class="two-col">
+
+        <!-- Recent Transactions Table -->
+        <div class="table-card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Recent transactions</div>
+              <div class="card-sub" id="txTableSub" data-default-sub="Latest {{ recent_transactions|length }} orders">
+                Latest {{ recent_transactions|length }} orders
+              </div>
+            </div>
+            <button type="button" id="clearMonthFilterBtn" class="hero-tool-btn" style="display:none;">Clear filter</button>
+          </div>
+
+          {% if recent_transactions %}
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Store</th>
+                  <th>Order Status</th>
+                  <th>Payment</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for tx in recent_transactions %}
+                {% set colors = ['#3b82f6','#8b5cf6','#0d9488','#f59e0b','#ef4444','#ec4899','#10b981','#6366f1'] %}
+                {% set ci = loop.index0 % 8 %}
+                <tr class="tx-row" data-month-label="{{ tx.created_at.strftime('%b') if tx.created_at else '' }}">
+                  <td><span class="tracking-code">{{ tx.tracking_id }}</span></td>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-ava" style="background:{{ colors[ci] }};">
+                        {{ tx.user_name[:2].upper() if tx.user_name and tx.user_name != 'N/A' else 'NA' }}
+                      </div>
+                      {{ tx.user_name }}
+                    </div>
+                  </td>
+                  <td style="color:#8a90a5;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    {{ tx.store_name }}</td>
+                  <td>
+                    {% set s = tx.status | upper %}
+                    {% if s == 'DELIVERED' %}
+                    <span class="status-badge sb-delivered">Delivered</span>
+                    {% elif s == 'CONFIRMED' %}
+                    <span class="status-badge sb-confirmed">Confirmed</span>
+                    {% elif s == 'PENDING' %}
+                    <span class="status-badge sb-pending">Pending</span>
+                    {% elif s == 'CANCELLED' %}
+                    <span class="status-badge sb-cancelled">Cancelled</span>
+                    {% else %}
+                    <span class="status-badge sb-default">{{ tx.status }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% set ps = tx.payment_status | upper %}
+                    {% if ps == 'SUCCESS' %}
+                    <span class="pay-pill pp-paid">Paid</span>
+                    {% elif ps == 'PENDING' %}
+                    <span class="pay-pill pp-pending">Pending</span>
+                    {% elif ps == 'FAILED' %}
+                    <span class="pay-pill pp-failed">Failed</span>
+                    {% else %}
+                    <span class="pay-pill pp-default">{{ tx.payment_status }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="amount-cell{% if tx.payment_status|upper == 'FAILED' %} is-failed{% endif %}">
+                    ₹{{ "%.2f"|format(tx.amount) }}
+                  </td>
+                  <td style="color:#8a90a5;white-space:nowrap;">
+                    {{ tx.created_at.strftime('%d %b') if tx.created_at else 'N/A' }}
+                  </td>
+                  <td>
+                    <a href="{{ url_for('Med_admin.Med_view_order', order_id=tx.id) }}" class="view-btn">View</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">No transactions found.</div>
+          {% endif %}
+        </div>
+
+        <!-- Analytics Chart -->
+        <div class="analytics-card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Trend analytics</div>
+              <div class="card-sub">{{ chart_range_label }}</div>
+            </div>
+            <div class="hero-tools" style="margin-top:0;">
+              <a class="hero-tool-btn range-btn{% if chart_days == 7 %} active{% endif %}"
+                href="{{ url_for('Med_admin.Med_admin_dashboard', chart_days=7) }}">7D</a>
+              <a class="hero-tool-btn range-btn{% if chart_days == 30 %} active{% endif %}"
+                href="{{ url_for('Med_admin.Med_admin_dashboard', chart_days=30) }}">30D</a>
+              <a class="hero-tool-btn range-btn{% if chart_days == 180 %} active{% endif %}"
+                href="{{ url_for('Med_admin.Med_admin_dashboard', chart_days=180) }}">6M</a>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item"><span class="legend-dot" style="background:#2563eb;"></span>Revenue (₹)</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#0d9488;"></span>Orders</div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="analyticsChart"></canvas>
+          </div>
+          <div class="chart-stats">
+            <div class="chart-stat-box">
+              <div class="cs-label">Total revenue (chart)</div>
+              <div class="cs-value">₹{{ "%.0f"|format(monthly_values | sum) }}</div>
+              <div class="cs-sub" style="color:#16a34a;">Paid orders only</div>
+            </div>
+            <div class="chart-stat-box">
+              <div class="cs-label">Total orders (chart)</div>
+              <div class="cs-value">{{ monthly_orders | sum }}</div>
+              <div class="cs-sub" style="color:#2563eb;">{{ chart_range_label }}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Bottom Row ── -->
+      <div class="bottom-row">
+
+        <!-- Top Stores -->
+        <div class="table-card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Top performing stores</div>
+              <div class="card-sub">By revenue this month</div>
+            </div>
+          </div>
+          {% set store_colors = ['#2563eb','#0d9488','#f59e0b','#7c3aed','#ef4444'] %}
+          {% if top_stores %}
+          {% set max_rev = top_stores[0].revenue if top_stores else 1 %}
+          {% for store in top_stores %}
+          {% set pct = ((store.revenue / max_rev) * 100) | int if max_rev > 0 else 0 %}
+          {% set sc = store_colors[loop.index0 % 5] %}
+          <div class="store-item">
+            <div class="store-logo" style="background:{{ sc }};">
+              {{ store.name[:2].upper() if store.name else '??' }}
+            </div>
+            <div class="store-info">
+              <div class="store-name">{{ store.name }}</div>
+              <div class="store-type">{{ store.orders }} orders this month</div>
+              <div class="store-bar-wrap">
+                <div class="store-bar" style="width:{{ pct }}%;background:{{ sc }};"></div>
+              </div>
+            </div>
+            <div class="store-val">
+              <div class="store-amount">₹{{ "%.0f"|format(store.revenue) }}</div>
+              <div class="store-orders-count">{{ store.orders }} orders</div>
+            </div>
+          </div>
+          {% endfor %}
+          {% else %}
+          <div class="empty-state">No store data this month.</div>
+          {% endif %}
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="activity-card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Recent activity</div>
+              <div class="card-sub">Platform events &amp; notifications</div>
+            </div>
+          </div>
+          {% set act_colors = {'notification': '#7c3aed', 'order': '#2563eb'} %}
+          {% set dot_colors =
+          ['#16a34a','#2563eb','#f59e0b','#7c3aed','#ef4444','#0d9488','#ec4899','#6366f1','#f97316','#14b8a6'] %}
+          {% if activities %}
+          {% for act in activities %}
+          <div class="activity-item">
+            <div class="act-dot" style="background:{{ dot_colors[loop.index0 % 10] }};"></div>
+            <div>
+              <div class="act-text">{{ act.message }}</div>
+              <div class="act-time">
+                {% if act.time %}
+                {{ act.time.strftime('%d %b %Y, %H:%M') }}
+                {% else %}
+                Just now
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          {% else %}
+          <div class="empty-state">No recent activity.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- ── Quick Actions ── -->
+      <div class="quick-actions">
+        <a href="{{ url_for('Med_admin.Med_manage_users') }}" class="quick-action-btn qa-blue">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+            <path
+              d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+          </svg>
+          Manage Users
+        </a>
+        <a href="{{ url_for('Med_admin.Med_manage_stores') }}" class="quick-action-btn qa-teal">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+            <path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z" />
+          </svg>
+          Manage Stores
+        </a>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /dash-root -->
+
+<!-- Mobile Sidebar Overlay -->
+<div class="mobile-sidebar-overlay" id="mobileSidebarOverlay"></div>
+
+<!-- Pass Flask data to JS safely -->
+<script>
+  const MONTHLY_LABELS = {{ monthly_labels | tojson }};
+  const MONTHLY_REVENUE = {{ monthly_values | tojson }};
+  const MONTHLY_ORDERS = {{ monthly_orders  | tojson }};
+  const RECENT_TRANSACTIONS = [
+    {% for tx in recent_transactions %}
+  {
+    id: {{ tx.id | tojson }},
+    tracking_id: {{ tx.tracking_id | tojson }},
+    user_name: {{ tx.user_name | tojson }},
+    store_name: {{ tx.store_name | tojson }},
+    status: {{ tx.status | tojson }},
+    payment_status: {{ tx.payment_status | tojson }},
+    amount: {{ tx.amount | tojson }},
+    created_at: {{ (tx.created_at.strftime('%Y-%m-%d %H:%M') if tx.created_at else '') | tojson }}
+  } {% if not loop.last %}, {% endif %}
+  {% endfor %}
+  ];
+</script>
+
+<script>
+    /* Live date chip */
+    (function () {
+      const d = new Date();
+      const opts = { day: 'numeric', month: 'short', year: 'numeric' };
+      document.getElementById('liveDateChip').textContent = d.toLocaleDateString('en-IN', opts);
+    })();
+
+  /* Theme switch (persisted for admin) */
+  (function () {
+    const key = 'med_admin_theme';
+    const btn = document.getElementById('themeToggleBtn');
+    const text = document.getElementById('themeToggleText');
+    const icon = document.getElementById('themeToggleIcon');
+    const stored = localStorage.getItem(key);
+
+    function paint(mode) {
+      const dark = mode === 'dark';
+      document.body.classList.toggle('admin-dark', dark);
+      text.textContent = dark ? 'Light' : 'Dark';
+      icon.textContent = dark ? '☀' : '🌙';
+    }
+
+    paint(stored === 'dark' ? 'dark' : 'light');
+    btn.addEventListener('click', function () {
+      const dark = !document.body.classList.contains('admin-dark');
+      const mode = dark ? 'dark' : 'light';
+      localStorage.setItem(key, mode);
+      paint(mode);
+    });
+  })();
+
+  /* Mobile Sidebar Toggle */
+  (function () {
+    const sidebarKey = 'med_admin_sidebar_state';
+    const sidebar = document.querySelector('.sidebar');
+    const toggle = document.getElementById('mobileMenuToggle');
+    const overlay = document.getElementById('mobileSidebarOverlay');
+
+    if (!sidebar || !toggle || !overlay) return;
+
+    function updateToggleState(isOpen) {
+      toggle.classList.toggle('active', isOpen);
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('mobile-active');
+      overlay.classList.remove('active');
+      updateToggleState(false);
+      localStorage.setItem(sidebarKey, 'closed');
+    }
+
+    function openSidebar() {
+      sidebar.classList.add('mobile-active');
+      overlay.classList.add('active');
+      updateToggleState(true);
+      localStorage.setItem(sidebarKey, 'open');
+    }
+
+    function toggleSidebar() {
+      if (sidebar.classList.contains('mobile-active')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+
+    // Restore sidebar state on mobile (remember if user had it open)
+    const savedState = localStorage.getItem(sidebarKey);
+    const isMobileView = window.innerWidth <= 640;
+    if (isMobileView && savedState === 'open') {
+      openSidebar();
+    }
+
+    // Event listeners
+    toggle.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar when a nav item is clicked
+    const navItems = sidebar.querySelectorAll('.nav-item, .nav-label');
+    navItems.forEach(function (item) {
+      if (item.classList.contains('nav-item')) {
+        item.addEventListener('click', closeSidebar);
+      }
+    });
+
+    // Handle resize: close sidebar when switching from mobile to desktop
+    window.addEventListener('resize', function () {
+      const isNowMobile = window.innerWidth <= 640;
+      if (!isNowMobile && sidebar.classList.contains('mobile-active')) {
+        closeSidebar();
+      }
+    });
+  })();
+
+  function csvEscape(value) {
+    const v = value == null ? '' : String(value);
+    return '"' + v.replace(/"/g, '""') + '"';
+  }
+
+  function downloadCsv(filename, headers, rows) {
+    const lines = [headers.map(csvEscape).join(',')];
+    rows.forEach(function (row) {
+      lines.push(row.map(csvEscape).join(','));
+    });
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  (function bindReportDownloads() {
+    const stamp = new Date().toISOString().slice(0, 10);
+    const revenueBtn = document.getElementById('downloadRevenueBtn');
+    const ordersBtn = document.getElementById('downloadOrdersBtn');
+
+    revenueBtn.addEventListener('click', function () {
+      const rows = MONTHLY_LABELS.map(function (label, i) {
+        return [label, MONTHLY_REVENUE[i] || 0, MONTHLY_ORDERS[i] || 0];
+      });
+      downloadCsv('revenue-report-' + stamp + '.csv', ['Month', 'Revenue_INR', 'Orders'], rows);
+    });
+
+    ordersBtn.addEventListener('click', function () {
+      const rows = RECENT_TRANSACTIONS.map(function (tx) {
+        return [
+          tx.id,
+          tx.tracking_id,
+          tx.user_name,
+          tx.store_name,
+          tx.status,
+          tx.payment_status,
+          tx.amount,
+          tx.created_at
+        ];
+      });
+      downloadCsv(
+        'orders-report-' + stamp + '.csv',
+        ['OrderID', 'TrackingID', 'Customer', 'Store', 'OrderStatus', 'PaymentStatus', 'Amount_INR', 'CreatedAt'],
+        rows
+      );
+    });
+  })();
+
+  function formatMonthChange(current, previous, unitPrefix, unitSuffix) {
+    if (typeof previous !== 'number' || Number.isNaN(previous)) {
+      return 'No previous month data';
+    }
+
+    const delta = current - previous;
+    const sign = delta >= 0 ? '+' : '-';
+    const absDelta = Math.abs(delta);
+
+    if (previous === 0) {
+      if (current === 0) return 'No change from previous month';
+      return sign + unitPrefix + absDelta.toLocaleString('en-IN') + unitSuffix + ' vs previous month';
+    }
+
+    const pct = Math.abs((delta / previous) * 100);
+    return sign + unitPrefix + absDelta.toLocaleString('en-IN') + unitSuffix +
+      ' (' + sign + pct.toFixed(1) + '%) vs previous month';
+  }
+
+  function applyTransactionMonthFilter(monthLabel) {
+    const rows = document.querySelectorAll('.tx-row');
+    const clearBtn = document.getElementById('clearMonthFilterBtn');
+    const sub = document.getElementById('txTableSub');
+    const defaultSub = sub ? (sub.getAttribute('data-default-sub') || '') : '';
+
+    if (!rows.length || !sub) return;
+
+    let visibleCount = 0;
+    rows.forEach(function (row) {
+      const rowMonth = row.getAttribute('data-month-label');
+      const normalizedLabel = monthLabel ? String(monthLabel) : '';
+      const show = !normalizedLabel || rowMonth === normalizedLabel || normalizedLabel.endsWith(rowMonth);
+      row.style.display = show ? '' : 'none';
+      if (show) visibleCount += 1;
+    });
+
+    if (monthLabel) {
+      sub.textContent = 'Showing ' + visibleCount + ' orders for ' + monthLabel;
+      if (clearBtn) clearBtn.style.display = 'inline-flex';
+    } else {
+      sub.textContent = defaultSub || ('Latest ' + rows.length + ' orders');
+      if (clearBtn) clearBtn.style.display = 'none';
+    }
+  }
+
+  (function bindMonthFilterReset() {
+    const clearBtn = document.getElementById('clearMonthFilterBtn');
+    if (!clearBtn) return;
+    clearBtn.addEventListener('click', function () {
+      applyTransactionMonthFilter(null);
+    });
+  })();
+
+  /* Analytics Chart */
+  const ctx = document.getElementById('analyticsChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: MONTHLY_LABELS,
+      datasets: [
+        {
+          label: 'Revenue (₹)',
+          data: MONTHLY_REVENUE,
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37,99,235,0.07)',
+          borderWidth: 2,
+          pointBackgroundColor: '#2563eb',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.4
+        },
+        {
+          label: 'Orders',
+          data: MONTHLY_ORDERS,
+          borderColor: '#0d9488',
+          backgroundColor: 'rgba(13,148,136,0.06)',
+          borderWidth: 2,
+          pointBackgroundColor: '#0d9488',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.4,
+          yAxisID: 'y2'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0f1d3a',
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.75)',
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            label: function (ctx) {
+              const current = Number(ctx.parsed.y || 0);
+              const prevRaw = ctx.dataIndex > 0 ? ctx.dataset.data[ctx.dataIndex - 1] : NaN;
+              const previous = Number(prevRaw);
+
+              if (ctx.datasetIndex === 0) {
+                return [
+                  ' ₹' + current.toLocaleString('en-IN'),
+                  ' ' + formatMonthChange(current, previous, '₹', '')
+                ];
+              }
+
+              return [
+                ' ' + current + ' orders',
+                ' ' + formatMonthChange(current, previous, '', ' orders')
+              ];
+            }
+          }
+        }
+      },
+      onClick: function (_evt, elements, chart) {
+        if (!elements || !elements.length) return;
+        const pointIndex = elements[0].index;
+        const monthLabel = chart.data.labels[pointIndex];
+        applyTransactionMonthFilter(monthLabel);
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 11 }, color: '#8a90a5' },
+          border: { display: false }
+        },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: {
+            font: { size: 10 }, color: '#8a90a5',
+            callback: v => '₹' + (v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v)
+          },
+          border: { display: false }
+        },
+        y2: {
+          position: 'right',
+          grid: { display: false },
+          ticks: { font: { size: 10 }, color: '#8a90a5' },
+          border: { display: false }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}
