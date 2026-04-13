@@ -10,7 +10,7 @@ class Med_User(UserMixin, db.Model):
     phone = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True)
     password_hash = db.Column(db.Text, nullable=False)
-    role = db.Column(db.Enum('customer','store','admin'), nullable=False)
+    role = db.Column(db.Enum('customer', 'store', 'admin', name='user_role_enum'), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     latitude = db.Column(db.Float, nullable=True)
     longitude = db.Column(db.Float, nullable=True)
@@ -81,13 +81,14 @@ class Med_Order(db.Model):
     medicine_total = db.Column(db.Float, default=0)
     total_amount = db.Column(db.Float, default=0)
 
-    payment_method = db.Column(db.Enum('COD', 'ONLINE'), nullable=True)
-    payment_status = db.Column(db.Enum('PENDING', 'SUCCESS', 'FAILED'), default='PENDING')
+    payment_method = db.Column(db.Enum('COD', 'ONLINE', name='payment_method_enum'), nullable=True)
+    payment_status = db.Column(db.Enum('PENDING', 'SUCCESS', 'FAILED', name='payment_status_enum'), default='PENDING')
 
     order_status = db.Column(db.Enum(
         'NEW', 'ACCEPTED', 'REJECTED',
         'PREPARING', 'OUT_FOR_DELIVERY',
-        'DELIVERED', 'CANCELLED'
+        'DELIVERED', 'CANCELLED',
+        name='order_status_enum'
     ), default='NEW')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -101,7 +102,7 @@ class Med_Payment(db.Model):
     transaction_id = db.Column(db.String(150), nullable=True)
     payment_gateway = db.Column(db.String(50), nullable=True)
     amount = db.Column(db.Float, nullable=False)
-    status = db.Column(db.Enum('INITIATED', 'SUCCESS', 'FAILED'), default='INITIATED')
+    status = db.Column(db.Enum('INITIATED', 'SUCCESS', 'FAILED', name='transaction_status_enum'), default='INITIATED')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Med_Notification(db.Model):
