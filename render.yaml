@@ -4,6 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
+    preDeployCommand: flask db upgrade
     startCommand: gunicorn Med_run_final:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
     autoDeploy: true
     healthCheckPath: /
@@ -14,6 +15,8 @@ services:
         generateValue: true
       - key: FLASK_ENV
         value: production
+      - key: FLASK_APP
+        value: Med_run_final.py
       - key: DATABASE_URL
         sync: false
       - key: MAIL_SERVER
